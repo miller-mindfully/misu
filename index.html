@@ -738,7 +738,7 @@
 
         .modal-content {
             position: relative;
-            background: var(--bg-color);
+            background: #ffffff;
             margin: 2rem auto;
             padding: 0;
             width: 90%;
@@ -752,25 +752,27 @@
 
         .modal-header {
             padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--bg-color);
+            background: #ffffff;
             border-radius: 12px 12px 0 0;
             flex-shrink: 0;
         }
 
         .modal-body {
-            padding: 1.5rem;
+            padding: 0;
             overflow-y: auto;
             flex: 1;
             position: relative;
+            background: #ffffff;
         }
 
         .modal-content-wrapper {
             height: 100%;
             overflow-y: auto;
+            background: #ffffff;
         }
 
         .modal-close {
@@ -2043,15 +2045,37 @@
                         const temp = document.createElement('div');
                         temp.innerHTML = html;
                         
-                        // Extract the content we want (excluding any outer HTML/body tags)
-                        const content = temp.querySelector('body')?.innerHTML || temp.innerHTML;
+                        // Get the entire content of the HTML file
+                        const content = temp.innerHTML;
                         
-                        // Wrap the content in a container for proper scrolling
-                        modalBody.innerHTML = `
-                            <div class="modal-content-wrapper">
-                                ${content}
-                            </div>
-                        `;
+                        // Create an iframe to properly embed the content
+                        const iframe = document.createElement('iframe');
+                        iframe.style.width = '100%';
+                        iframe.style.height = '100%';
+                        iframe.style.border = 'none';
+                        iframe.style.background = '#ffffff';
+                        
+                        // Create a wrapper for the iframe
+                        const wrapper = document.createElement('div');
+                        wrapper.style.width = '100%';
+                        wrapper.style.height = '100%';
+                        wrapper.style.overflow = 'hidden';
+                        wrapper.appendChild(iframe);
+                        
+                        // Set the iframe content
+                        modalBody.innerHTML = '';
+                        modalBody.appendChild(wrapper);
+                        
+                        // Write the content to the iframe
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        iframeDoc.open();
+                        iframeDoc.write(content);
+                        iframeDoc.close();
+                        
+                        // Adjust iframe height to content
+                        iframe.onload = function() {
+                            iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+                        };
                     })
                     .catch(error => {
                         modalBody.innerHTML = `<p>Error loading ${type} tool: ${error.message}</p>`;
