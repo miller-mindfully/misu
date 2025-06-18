@@ -763,7 +763,7 @@
 
         .modal-body {
             padding: 0;
-            overflow-y: auto;
+            overflow: hidden;
             flex: 1;
             position: relative;
             background: #ffffff;
@@ -771,7 +771,8 @@
 
         .modal-content-wrapper {
             height: 100%;
-            overflow-y: auto;
+            width: 100%;
+            overflow: hidden;
             background: #ffffff;
         }
 
@@ -2054,6 +2055,7 @@
                         iframe.style.height = '100%';
                         iframe.style.border = 'none';
                         iframe.style.background = '#ffffff';
+                        iframe.style.overflow = 'auto';
                         
                         // Create a wrapper for the iframe
                         const wrapper = document.createElement('div');
@@ -2072,9 +2074,23 @@
                         iframeDoc.write(content);
                         iframeDoc.close();
                         
-                        // Adjust iframe height to content
+                        // Adjust iframe height to content and enable scrolling
                         iframe.onload = function() {
-                            iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+                            const iframeBody = iframe.contentWindow.document.body;
+                            const iframeHtml = iframe.contentWindow.document.documentElement;
+                            
+                            // Set iframe body styles
+                            iframeBody.style.margin = '0';
+                            iframeBody.style.padding = '0';
+                            iframeBody.style.height = '100%';
+                            iframeBody.style.overflow = 'auto';
+                            
+                            // Set iframe html styles
+                            iframeHtml.style.height = '100%';
+                            iframeHtml.style.overflow = 'auto';
+                            
+                            // Set iframe height to match content
+                            iframe.style.height = Math.max(iframeBody.scrollHeight, iframeHtml.scrollHeight) + 'px';
                         };
                     })
                     .catch(error => {
