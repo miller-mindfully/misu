@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindfully Referral Status Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            color: black;
+            line-height: 1.4;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: #8B5CF6;
+        }
+        
+        .form-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .form-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .form-row label {
+            font-weight: bold;
+            margin-right: 10px;
+            min-width: 80px;
+        }
+        
+        .form-row input[type="text"], .form-row input[type="date"] {
+            flex: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 2px 5px;
+            font-size: 14px;
+        }
+        
+        .hipaa-notice {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        
+        .status-section {
+            margin: 30px 0;
+        }
+        
+        .status-intro {
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group {
+            margin: 10px 0;
+        }
+        
+        .checkbox-row {
+            display: flex;
+            align-items: flex-start;
+            margin: 8px 0;
+        }
+        
+        .checkbox-row input[type="checkbox"] {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        
+        .checkbox-content {
+            flex: 1;
+        }
+        
+        .inline-fields {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .inline-fields input {
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 2px 5px;
+            min-width: 100px;
+        }
+        
+        .sub-options {
+            margin-left: 30px;
+            margin-top: 10px;
+        }
+        
+        .sub-options .checkbox-row {
+            margin: 5px 0;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        
+        .contact-info {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .specialist-name {
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .specialist-name label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .specialist-name input {
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 2px 5px;
+            flex: 1;
+            max-width: 200px;
+        }
+        
+        .thank-you {
+            font-style: italic;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            @page {
+                size: letter;
+                margin: 0.75in;
+            }
+            html, body {
+                height: 100vh;
+                width: 100vw;
+                overflow: hidden;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                width: auto;
+                max-width: none;
+                font-size: 11pt;
+                line-height: 1.3;
+                color: black;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                justify-content: flex-start;
+            }
+            #referralForm {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                transform-origin: top left;
+                max-height: 100vh;
+                max-width: 100vw;
+            }
+            .action-buttons {
+                display: none !important;
+            }
+            .header {
+                margin-bottom: 15pt;
+            }
+            .logo-text {
+                font-size: 20pt;
+            }
+            .form-title {
+                font-size: 14pt;
+                margin-top: 10pt;
+            }
+            .form-row {
+                margin-bottom: 8pt;
+                font-size: 10pt;
+            }
+            .form-row input[type="text"], 
+            .form-row input[type="date"] {
+                font-size: 10pt;
+                min-width: 120px;
+            }
+            .hipaa-notice {
+                font-size: 9pt;
+                margin: 12pt 0;
+                padding: 8pt;
+                page-break-inside: avoid;
+            }
+            .status-section {
+                font-size: 10pt;
+                margin: 15pt 0;
+            }
+            .status-intro {
+                font-size: 10pt;
+                margin-bottom: 8pt;
+            }
+            .checkbox-row {
+                margin: 4pt 0;
+                page-break-inside: avoid;
+                font-size: 10pt;
+            }
+            .inline-fields {
+                margin-top: 3pt;
+            }
+            .inline-fields input {
+                font-size: 10pt;
+                min-width: 80px;
+            }
+            .sub-options {
+                margin-left: 20pt;
+                font-size: 9pt;
+            }
+            .specialist-name {
+                font-size: 10pt;
+                margin: 12pt 0;
+            }
+            .thank-you {
+                font-size: 10pt;
+                margin: 12pt 0;
+            }
+            .footer {
+                margin-top: 15pt;
+                padding-top: 8pt;
+            }
+            .contact-info {
+                font-size: 9pt;
+            }
+            input[type="text"], input[type="date"], input[type="time"] {
+                border-bottom: 1px solid #000 !important;
+                background: transparent !important;
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <img src="./logo.png" alt="Mindfully Logo" class="logo-img">
+        </div>
+        <div class="form-title">REFERRAL STATUS REPORT</div>
+    </div>
+
+    <form id="referralForm">
+        <div class="form-row">
+            <label>Date:</label>
+            <input type="date" name="date" id="date">
+            <label style="margin-left: 40px;">Referent:</label>
+            <input type="text" name="referent" style="flex: 2;">
+        </div>
+        
+        <div class="form-row">
+            <label>ATTN:</label>
+            <input type="text" name="attn" style="flex: 1; margin-right: 20px;">
+            <label>Fax No.:</label>
+            <input type="text" name="fax" style="flex: 1;">
+        </div>
+
+        <div class="hipaa-notice">
+            This fax and any accompanying documents may contain confidential and privileged information protected under the Health Insurance Portability and Accountability Act (HIPAA), 45 CFR Parts 160 and 164. This information is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are hereby notified that any review, dissemination, distribution, or duplication of this communication is strictly prohibited.<br><br>
+            If you have received this fax in error, please notify the sender immediately by email at <strong>intake@mindfully.com</strong> and destroy all copies of the original message.<br><br>
+            Thank you for your cooperation in maintaining the confidentiality and privacy of protected health information (PHI)
+        </div>
+
+        <div class="form-row">
+            <label>Patient Name:</label>
+            <input type="text" name="patientName" style="flex: 1; margin-right: 20px;">
+            <label>Patient DOB:</label>
+            <input type="date" name="patientDOB" style="flex: 1;">
+        </div>
+
+        <div class="status-section">
+            <div class="status-intro">
+                Your patient was recently contacted by our staff for services after receiving your referral.<br>
+                <strong>Please see the below options for status:</strong>
+            </div>
+
+            <div class="checkbox-group">
+                <div class="checkbox-row">
+                    <input type="checkbox" name="status" value="clinical-therapist">
+                    <div class="checkbox-content">
+                        Patient scheduled with a clinical therapist:
+                        <div class="inline-fields">
+                            <input type="text" placeholder="(clinician)" name="clinician"> on
+                            <input type="date" name="clinicianDate"> at
+                            <input type="time" name="clinicianTime">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" name="status" value="psychiatry-med">
+                    <div class="checkbox-content">
+                        Patient scheduled with psychiatry/med. mgmt:
+                        <div class="inline-fields">
+                            <input type="text" placeholder="(provider)" name="psychiatryProvider"> on
+                            <input type="date" name="psychiatryDate"> at
+                            <input type="time" name="psychiatryTime">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" name="status" value="psychiatry-tms">
+                    <div class="checkbox-content">
+                        Patient scheduled with psychiatry/TMS:
+                        <div class="inline-fields">
+                            <input type="text" placeholder="(provider)" name="tmsProvider"> on
+                            <input type="date" name="tmsDate"> at
+                            <input type="time" name="tmsTime">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" name="status" value="unavailable">
+                    <div class="checkbox-content">
+                        After 3 attempts to connect, the patient was unavailable to take our call and a voicemail was left with detailed information on options for scheduling with a request to call us back at their earliest convenience.
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" name="status" value="unable-contact">
+                    <div class="checkbox-content">
+                        Unable to contact the patient or leave a message, contact information possibly incorrect.
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" name="status" value="already-scheduled">
+                    <div class="checkbox-content">
+                        The patient is already scheduled with one of our providers or is already receiving services.
+                    </div>
+                </div>
+
+                <div class="checkbox-row">
+                    <input type="checkbox" name="status" value="unable-match">
+                    <div class="checkbox-content">
+                        At this time, we have instructed the patient to contact you, as we were unable to match your patient with one of our providers. <strong>(see reason below)</strong>
+                        
+                        <div class="sub-options">
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="unableReason" value="provider-unavailable">
+                                <div class="checkbox-content">
+                                    Provider not available in alignment with patient scheduling needs, preferences (gender or in-office/telehealth) or location.
+                                </div>
+                            </div>
+                            
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="unableReason" value="specialty-unavailable">
+                                <div class="checkbox-content">
+                                    Clinical speciality (e.g. DBT, EMDR) requested does not have any available clinician at this time. The patient was placed on the waitlist.
+                                </div>
+                            </div>
+                            
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="unableReason" value="insurance">
+                                <div class="checkbox-content">
+                                    Unable to locate a provider covered by patient insurance.
+                                </div>
+                            </div>
+                            
+                            <div class="checkbox-row">
+                                <input type="checkbox" name="unableReason" value="other">
+                                <div class="checkbox-content">
+                                    <input type="text" name="otherReason" style="width: 100%; border: none; border-bottom: 1px solid #000;" placeholder="Other reason...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="specialist-name">
+            <label>Specialist Name:</label>
+            <input type="text" name="specialistName">
+        </div>
+
+        <div class="thank-you">
+            <strong>Thank you for choosing Mindfully. Please feel free to reach out with any questions or concerns.</strong>
+        </div>
+
+        <div class="footer">
+            <div class="contact-info">
+                <strong>T:</strong> 888-830-0347 <strong>F:</strong> 513-939-0310 <strong>E:</strong> intake@mindfully.com <strong>W:</strong> www.mindfully.com<br>
+                <strong>A:</strong> 10290 Alliance Rd., Cincinnati, OH 45242
+            </div>
+        </div>
+    </form>
+
+    <script>
+        // Auto-fill today's date
+        document.getElementById('date').valueAsDate = new Date();
+        
+        // Print functionality
+        function printForm() {
+            window.print();
+        }
+        
+        // Create print button
+        function createPrintButton() {
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'action-buttons';
+            buttonContainer.style.cssText = 'margin: 20px auto; text-align: center; display: flex; flex-direction: column; align-items: center;';
+            
+            const printButton = document.createElement('button');
+            printButton.textContent = 'Print Form';
+            printButton.style.cssText = 'padding: 12px 24px; background: #8B5CF6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 500; margin-bottom: 8px;';
+            printButton.onclick = printForm;
+            buttonContainer.appendChild(printButton);
+
+            // Clear Form button
+            const clearButton = document.createElement('button');
+            clearButton.textContent = 'Clear Form';
+            clearButton.type = 'button';
+            clearButton.style.cssText = 'padding: 12px 24px; background: #EF4444; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 500; margin-bottom: 8px;';
+            clearButton.onclick = function() {
+                if (confirm('Are you sure you want to clear the form? This will remove all saved data.')) {
+                    localStorage.removeItem('mindfullyFormData');
+                    document.getElementById('referralForm').reset();
+                    // Also clear any checkboxes/radios
+                    document.querySelectorAll('#referralForm input[type="checkbox"], #referralForm input[type="radio"]').forEach(el => el.checked = false);
+                }
+            };
+            buttonContainer.appendChild(clearButton);
+
+            document.body.appendChild(buttonContainer);
+            createFaxFieldAndButton();
+        }
+        
+        // Form validation and data collection
+        function collectFormData() {
+            const formData = new FormData(document.getElementById('referralForm'));
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            return data;
+        }
+        
+        // Save form data to localStorage for persistence
+        function saveFormData() {
+            const data = collectFormData();
+            localStorage.setItem('mindfullyFormData', JSON.stringify(data));
+        }
+        
+        // Load form data from localStorage
+        function loadFormData() {
+            const saved = localStorage.getItem('mindfullyFormData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox' || element.type === 'radio') {
+                            element.checked = true;
+                        } else {
+                            element.value = data[key];
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Auto-save on form changes
+        document.getElementById('referralForm').addEventListener('change', saveFormData);
+        document.getElementById('referralForm').addEventListener('input', saveFormData);
+        
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            loadFormData();
+            createPrintButton();
+        });
+        
+        // Add hover effect for button
+        document.addEventListener('DOMContentLoaded', () => {
+            const style = document.createElement('style');
+            style.textContent = `
+                .action-buttons button:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                    transition: all 0.3s ease;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+        // Add after createPrintButton() in the script
+        function createFaxFieldAndButton() {
+            const buttonContainer = document.querySelector('.action-buttons');
+            if (!buttonContainer) return;
+
+            // Create container for fax input and button
+            const faxDiv = document.createElement('div');
+            faxDiv.style.cssText = 'margin-top: 16px; display: flex; justify-content: center; align-items: center; gap: 8px;';
+
+            // Fax input
+            const faxInput = document.createElement('input');
+            faxInput.type = 'text';
+            faxInput.placeholder = '___-___-____';
+            faxInput.pattern = '\\d{3}-\\d{3}-\\d{4}';
+            faxInput.maxLength = 12;
+            faxInput.style.cssText = 'padding: 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 5px; width: 160px;';
+            faxInput.id = 'returnFaxInput';
+            faxInput.setAttribute('aria-label', 'Return Fax Number');
+            // Input mask for xxx-xxx-xxxx
+            faxInput.addEventListener('input', function(e) {
+                let value = faxInput.value.replace(/[^\d]/g, '');
+                if (value.length > 10) value = value.slice(0, 10);
+                let formatted = '';
+                if (value.length > 0) formatted = value.slice(0, 3);
+                if (value.length >= 4) formatted += '-' + value.slice(3, 6);
+                if (value.length >= 7) formatted += '-' + value.slice(6, 10);
+                faxInput.value = formatted;
+            });
+
+            // Fax button
+            const faxButton = document.createElement('button');
+            faxButton.textContent = 'Send Fax';
+            faxButton.type = 'button';
+            faxButton.style.cssText = 'padding: 12px 24px; background: #8B5CF6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 500;';
+            faxButton.onclick = async function() {
+                const faxVal = faxInput.value.trim();
+                if (!/^\d{3}-\d{3}-\d{4}$/.test(faxVal)) {
+                    alert('Please enter a valid fax number in the format xxx-xxx-xxxx.');
+                    return;
+                }
+                const faxNo = faxVal.replace(/-/g, '');
+                const mailto = `mailto:${faxNo}@assurehealth.fax.goto.com?subject=5011793816%20%20Return%20Status%20Report`;
+                // Try to generate PDF
+                try {
+                    await generateAndAttachPDF(mailto);
+                } catch (e) {
+                    alert('Could not generate PDF. Please print the form and fax manually.');
+                    window.location.href = mailto;
+                }
+            };
+
+            faxDiv.appendChild(faxInput);
+            faxDiv.appendChild(faxButton);
+            buttonContainer.appendChild(faxDiv);
+        }
+
+        // PDF generation using html2pdf.js
+        async function generateAndAttachPDF(mailto) {
+            if (typeof html2pdf === 'undefined') throw new Error('html2pdf not loaded');
+            const form = document.getElementById('referralForm');
+            const opt = {
+                margin:       0.5,
+                filename:     'status-report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            // Generate PDF blob
+            const pdfBlob = await html2pdf().from(form).set(opt).outputPdf('blob');
+            // Create a temporary download link
+            const url = URL.createObjectURL(pdfBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'status-report.pdf';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                // Open mailto after download
+                window.location.href = mailto;
+            }, 500);
+        }
+
+        // Add html2pdf.js CDN
+        (function addHtml2PdfScript() {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.onload = function() { window.html2pdfLoaded = true; };
+            document.head.appendChild(script);
+        })();
+    </script>
+</body>
+</html>

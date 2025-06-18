@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Location Map with Zip Code Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    
+    #search-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: transparent;
+      padding: 15px;
+      border: none;
+      min-width: 250px;
+    }
+    
+    #zip-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 4px;
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    
+    #zip-input::placeholder {
+      color: #666;
+    }
+    
+    #search-btn {
+      background: #A361FE;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    
+    #search-btn:hover {
+      background: #8e4bdb;
+    }
+    
+    #clear-btn {
+      background: #7FA9FE;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    
+    #clear-btn:hover {
+      background: #6b96fe;
+    }
+    
+    #status {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+    
+    .leaflet-popup-content b {
+      font-size: 1.1em;
+    }
+    
+    .distance-label {
+      background: transparent;
+      border: none;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    #secret-game-btn {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      width: 50px;
+      height: 50px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+      opacity: 0;
+    }
+    
+    #pong-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 9999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    #pong-game {
+      position: relative;
+      width: 800px;
+      height: 400px;
+      background: transparent;
+      border: 3px solid #000000;
+      border-radius: 10px;
+    }
+    
+    #pong-instructions {
+      margin-top: 20px;
+      text-align: center;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+    
+    #pong-canvas {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
+    
+    #exit-pong {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    #exit-pong:hover {
+      background: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <div id="search-container">
+    <input type="text" id="zip-input" placeholder="Enter ZIP code (e.g., 45202)" maxlength="5">
+    <button id="search-btn">Find Nearest</button>
+    <button id="clear-btn">Clear</button>
+    <div id="status"></div>
+  </div>
+  
+  <button id="secret-game-btn"></button>
+  
+  <div id="pong-overlay">
+    <div id="pong-game">
+      <canvas id="pong-canvas" width="800" height="400"></canvas>
+      <button id="exit-pong">X</button>
+    </div>
+    <div id="pong-instructions">
+      Use W and S keys to move your paddle • Beat the CPU! • Click X to exit
+    </div>
+  </div>
+  
+  <div id="map"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map');
+
+    // Use Carto Light basemap for a clean modern look
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> & Carto',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Add colored states layer
+    let statesLayer = null;
+    
+    // Function to load and add colored states
+    async function addColoredStates() {
+      try {
+        // Fetch US states GeoJSON data
+        const response = await fetch('https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson');
+        const worldData = await response.json();
+        
+        // Filter for US states (this is a simplified approach - you might want a more specific US states GeoJSON)
+        // Let's use a different, more specific US states dataset
+        const usResponse = await fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json');
+        const usStatesData = await usResponse.json();
+        
+        statesLayer = L.geoJSON(usStatesData, {
+          style: function(feature) {
+            return {
+              fillColor: getStateColor(feature.properties.name),
+              weight: 1,
+              opacity: 0.6,
+              color: '#7FA9FE',
+              fillOpacity: 0.3
+            };
+          },
+          onEachFeature: function(feature, layer) {
+            if (feature.properties && feature.properties.name) {
+              layer.bindTooltip(feature.properties.name, {permanent: false, direction: 'center'});
+            }
+          }
+        }).addTo(map);
+        
+        // Send states layer to back so markers appear on top
+        statesLayer.bringToBack();
+        
+      } catch (error) {
+        console.log('Could not load states data:', error);
+        // If states data fails to load, continue without it
+      }
+    }
+    
+    // Function to get color for each state (alternating between the two theme colors)
+    function getStateColor(stateName) {
+      // Simple hash function to consistently assign colors
+      const hash = stateName.split('').reduce((a, b) => {
+        a = ((a << 5) - a) + b.charCodeAt(0);
+        return a & a;
+      }, 0);
+      
+      return Math.abs(hash) % 2 === 0 ? '#A361FE' : '#7FA9FE';
+    }
+
+    const locations = [
+      ["<b>Mindfully Counseling</b><br>Anderson Township<br>463 Ohio Pike, Suite 102-B, Cincinnati, OH 45255", 39.0585, -84.3026],
+      ["<b>Mindfully Counseling</b><br>Aurora/Cleveland<br>199 S. Chillicothe Rd., Suite 206, Chillicothe, OH 44202", 41.3153, -81.3459],
+      ["<b>Mindfully Counseling</b><br>Centerville/Dayton<br>10861 Yankee St., Dayton, OH 45458", 39.6171, -84.1615],
+      ["<b>Mindfully Counseling</b><br>Dublin<br>5050 Blazer Parkway, Dublin, OH 43017", 40.0992, -83.1342],
+      ["<b>Mindfully Counseling & Psychiatry</b><br>Eastgate<br>4600 Beechwood Rd., Suite 4 & 5, Cincinnati, OH 45244", 39.1201, -84.2682],
+      ["<b>Mindfully Counseling & Psychiatry</b><br>Fairfield<br>1251 Nilles Rd., Suite 4 & 5, Fairfield, OH 45014", 39.3452, -84.5606],
+      ["<b>Mindfully Counseling</b><br>Kenwood<br>8040 Hosbrook Rd., Suite 320, Cincinnati, OH 45236", 39.2015, -84.3797],
+      ["<b>Mindfully Counseling & Psychiatry</b><br>Marion<br>165 West Center St., Suite 400, Marion, OH 43302", 40.5887, -83.1293],
+      ["<b>Mindfully Counseling & Psychiatry</b><br>Montgomery<br>10547 Montgomery Rd., Suite 700, Cincinnati, OH 45245", 39.2553, -84.3416],
+      ["<b>Mindfully Counseling</b><br>Oxford<br>110 S College Ave Suite 203, Oxford, OH 45056", 39.5070, -84.7430],
+      ["<b>Mindfully Counseling & Psychiatry</b><br>Strongsville/Cleveland<br>11565 Pearl Rd #200, Strongsville, OH 44136", 41.3145, -81.8357],
+      ["<b>Mindfully Counseling</b><br>Toledo<br>3000 Regency Ct., Suite 207, Toledo, OH 43623", 41.6950, -83.6490],
+      ["<b>Mindfully Counseling</b><br>West Chester<br>5900 West Chester Rd, Suite C, West Chester Township, OH 45069", 39.3361, -84.4059],
+      ["<b>Mindfully Counseling</b><br>West Side<br>5630 Bridgetown Rd., Suite 4, Cincinnati, OH 45248", 39.1454, -84.6357],
+      ["<b>Worthington Pediatrics</b><br>Embedded Office - Indu Sastri<br>890 High St Suite 200, Worthington, OH 43085", 40.0918, -83.0180],
+      ["<b>Mindfully Counseling</b><br>Denver<br>4380 S. Syracuse St., #320, Denver, CO 80237", 39.6364, -104.8975],
+      ["<b>Mindfully Counseling</b><br>Longmont<br>825 Delaware Ave, #206, Longmont, CO 80501", 40.1662, -105.1019]
+    ];
+
+    // Store markers and other map elements
+    const locationMarkers = [];
+    let userMarker = null;
+    let connectionLines = [];
+    let distanceLabels = [];
+
+    // Add location markers to map
+    locations.forEach(([popup, lat, lng]) => {
+      const marker = L.marker([lat, lng], {
+        icon: L.divIcon({
+          className: 'location-marker',
+          html: '<div style="background-color: #007cba; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        })
+      }).addTo(map).bindPopup(popup);
+      
+      locationMarkers.push({
+        marker: marker,
+        lat: lat,
+        lng: lng,
+        popup: popup
+      });
+    });
+
+    // Load colored states after map is initialized
+    addColoredStates();
+
+    // Fit map to focus on Ohio initially
+    const ohioBounds = [
+      [38.4, -84.8], // Southwest corner of Ohio
+      [42.3, -80.5]  // Northeast corner of Ohio
+    ];
+    map.fitBounds(ohioBounds, { padding: [30, 30] });
+
+    // Calculate distance between two points using Haversine formula
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 3959; // Earth's radius in miles
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    // Find 3 closest locations
+    function findClosestLocations(userLat, userLng) {
+      const distances = locationMarkers.map(location => ({
+        ...location,
+        distance: calculateDistance(userLat, userLng, location.lat, location.lng)
+      }));
+      
+      return distances.sort((a, b) => a.distance - b.distance).slice(0, 3);
+    }
+
+    // Clear previous search results
+    function clearResults() {
+      if (userMarker) {
+        map.removeLayer(userMarker);
+        userMarker = null;
+      }
+      
+      connectionLines.forEach(line => map.removeLayer(line));
+      connectionLines = [];
+      
+      distanceLabels.forEach(label => map.removeLayer(label));
+      distanceLabels = [];
+      
+      // Reset all location markers to normal style
+      locationMarkers.forEach(location => {
+        location.marker.setIcon(L.divIcon({
+          className: 'location-marker',
+          html: '<div style="background-color: #007cba; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>',
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        }));
+      });
+      
+      document.getElementById('status').textContent = '';
+    }
+
+    // Geocode zip code using Nominatim (OpenStreetMap)
+    async function geocodeZipCode(zipCode) {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&country=US&postalcode=${zipCode}&limit=1`);
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          return {
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon)
+          };
+        } else {
+          throw new Error('ZIP code not found');
+        }
+      } catch (error) {
+        throw new Error('Failed to geocode ZIP code');
+      }
+    }
+
+    // Handle search
+    async function handleSearch() {
+      const zipCode = document.getElementById('zip-input').value.trim();
+      const statusEl = document.getElementById('status');
+      
+      if (!zipCode) {
+        statusEl.textContent = 'Please enter a ZIP code';
+        return;
+      }
+      
+      if (!/^\d{5}$/.test(zipCode)) {
+        statusEl.textContent = 'Please enter a valid 5-digit ZIP code';
+        return;
+      }
+      
+      statusEl.textContent = 'Searching...';
+      
+      try {
+        // Clear previous results
+        clearResults();
+        
+        // Geocode the ZIP code
+        const coords = await geocodeZipCode(zipCode);
+        
+        // Add user marker
+        userMarker = L.marker([coords.lat, coords.lng], {
+          icon: L.divIcon({
+            className: 'user-marker',
+            html: '<div style="background-color: #dc3545; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.4);"></div>',
+            iconSize: [22, 22],
+            iconAnchor: [11, 11]
+          })
+        }).addTo(map).bindPopup(`<b>ZIP Code: ${zipCode}</b>`);
+        
+        // Find 3 closest locations
+        const closest = findClosestLocations(coords.lat, coords.lng);
+        
+        // Draw lines and add distance labels
+        closest.forEach((location, index) => {
+          // Replace the closest location markers with the custom flow.png image
+          const flowIcon = L.icon({
+            iconUrl: 'flow.png',
+            iconSize: [16, 16],
+            iconAnchor: [8, 8],
+            popupAnchor: [0, -8]
+          });
+          
+          location.marker.setIcon(flowIcon);
+          
+          // Draw line with purple-blue theme colors
+          const lineColor = index === 0 ? '#A361FE' : '#7FA9FE';
+          const line = L.polyline(
+            [[coords.lat, coords.lng], [location.lat, location.lng]], 
+            { 
+              color: lineColor,
+              weight: index === 0 ? 3 : 2,
+              opacity: 0.8,
+              dashArray: index === 0 ? null : '5, 5'
+            }
+          ).addTo(map);
+          connectionLines.push(line);
+          
+          // Add distance label at midpoint
+          const midLat = (coords.lat + location.lat) / 2;
+          const midLng = (coords.lng + location.lng) / 2;
+          const distance = location.distance.toFixed(1);
+          
+          const distanceLabel = L.marker([midLat, midLng], {
+            icon: L.divIcon({
+              className: 'distance-label',
+              html: `<div class="distance-label">${distance} mi</div>`,
+              iconSize: [50, 20],
+              iconAnchor: [25, 10]
+            })
+          }).addTo(map);
+          distanceLabels.push(distanceLabel);
+        });
+        
+        // Fit map to show user location and closest locations
+        const allPoints = [[coords.lat, coords.lng], ...closest.map(loc => [loc.lat, loc.lng])];
+        map.fitBounds(allPoints, { padding: [50, 50] });
+        
+        statusEl.innerHTML = `Found 3 nearest locations:<br>
+          1. ${closest[0].distance.toFixed(1)} miles<br>
+          2. ${closest[1].distance.toFixed(1)} miles<br>
+          3. ${closest[2].distance.toFixed(1)} miles`;
+        
+      } catch (error) {
+        statusEl.textContent = `Error: ${error.message}`;
+      }
+    }
+
+    // Event listeners
+    document.getElementById('search-btn').addEventListener('click', handleSearch);
+    document.getElementById('clear-btn').addEventListener('click', clearResults);
+    
+    document.getElementById('zip-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        handleSearch();
+      }
+    });
+    
+    // Only allow numeric input for ZIP code
+    document.getElementById('zip-input').addEventListener('input', function(e) {
+      this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    // Pong Game Implementation
+    const pongOverlay = document.getElementById('pong-overlay');
+    const pongCanvas = document.getElementById('pong-canvas');
+    const ctx = pongCanvas.getContext('2d');
+    
+    let gameRunning = false;
+    let animationId;
+    
+    // Game objects
+    const game = {
+      ball: {
+        x: 400,
+        y: 200,
+        dx: 5,
+        dy: 3,
+        radius: 10
+      },
+      leftPaddle: {
+        x: 20,
+        y: 150,
+        width: 10,
+        height: 100,
+        dy: 0
+      },
+      rightPaddle: {
+        x: 770,
+        y: 150,
+        width: 10,
+        height: 100,
+        dy: 0
+      },
+      keys: {}
+    };
+    
+    // Create gradient for ball
+    function createBallGradient() {
+      const gradient = ctx.createRadialGradient(
+        game.ball.x, game.ball.y, 0,
+        game.ball.x, game.ball.y, game.ball.radius
+      );
+      gradient.addColorStop(0, '#A361FE');
+      gradient.addColorStop(1, '#7FA9FE');
+      return gradient;
+    }
+    
+    // Draw game objects
+    function draw() {
+      // Clear canvas
+      ctx.clearRect(0, 0, 800, 400);
+      
+      // Draw paddles with theme colors
+      ctx.fillStyle = '#A361FE';
+      ctx.fillRect(game.leftPaddle.x, game.leftPaddle.y, game.leftPaddle.width, game.leftPaddle.height);
+      
+      ctx.fillStyle = '#7FA9FE';
+      ctx.fillRect(game.rightPaddle.x, game.rightPaddle.y, game.rightPaddle.width, game.rightPaddle.height);
+      
+      // Draw ball with gradient
+      ctx.beginPath();
+      ctx.arc(game.ball.x, game.ball.y, game.ball.radius, 0, Math.PI * 2);
+      ctx.fillStyle = createBallGradient();
+      ctx.fill();
+      
+      // Draw center line
+      ctx.strokeStyle = 'rgba(163, 97, 254, 0.3)';
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(400, 0);
+      ctx.lineTo(400, 400);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    
+    // Update game logic
+    function update() {
+      // Move left paddle (player)
+      if (game.keys['w'] && game.leftPaddle.y > 0) {
+        game.leftPaddle.y -= 7;
+      }
+      if (game.keys['s'] && game.leftPaddle.y < 300) {
+        game.leftPaddle.y += 7;
+      }
+      
+      // AI for right paddle (CPU)
+      const paddleCenter = game.rightPaddle.y + game.rightPaddle.height / 2;
+      const ballY = game.ball.y;
+      const aiSpeed = 4; // Adjust for difficulty
+      
+      if (ballY < paddleCenter - 10 && game.rightPaddle.y > 0) {
+        game.rightPaddle.y -= aiSpeed;
+      } else if (ballY > paddleCenter + 10 && game.rightPaddle.y < 300) {
+        game.rightPaddle.y += aiSpeed;
+      }
+      
+      // Move ball
+      game.ball.x += game.ball.dx;
+      game.ball.y += game.ball.dy;
+      
+      // Ball collision with top/bottom walls
+      if (game.ball.y <= game.ball.radius || game.ball.y >= 400 - game.ball.radius) {
+        game.ball.dy = -game.ball.dy;
+      }
+      
+      // Ball collision with paddles
+      if (game.ball.x - game.ball.radius <= game.leftPaddle.x + game.leftPaddle.width &&
+          game.ball.y >= game.leftPaddle.y &&
+          game.ball.y <= game.leftPaddle.y + game.leftPaddle.height &&
+          game.ball.dx < 0) {
+        game.ball.dx = -game.ball.dx;
+      }
+      
+      if (game.ball.x + game.ball.radius >= game.rightPaddle.x &&
+          game.ball.y >= game.rightPaddle.y &&
+          game.ball.y <= game.rightPaddle.y + game.rightPaddle.height &&
+          game.ball.dx > 0) {
+        game.ball.dx = -game.ball.dx;
+      }
+      
+      // Reset ball if it goes off screen
+      if (game.ball.x < 0 || game.ball.x > 800) {
+        game.ball.x = 400;
+        game.ball.y = 200;
+        game.ball.dx = -game.ball.dx;
+      }
+    }
+    
+    // Game loop
+    function gameLoop() {
+      if (gameRunning) {
+        update();
+        draw();
+        animationId = requestAnimationFrame(gameLoop);
+      }
+    }
+    
+    // Start game
+    function startPong() {
+      gameRunning = true;
+      pongOverlay.style.display = 'flex';
+      
+      // Reset game state
+      game.ball.x = 400;
+      game.ball.y = 200;
+      game.ball.dx = Math.random() > 0.5 ? 5 : -5;
+      game.ball.dy = Math.random() > 0.5 ? 3 : -3;
+      game.leftPaddle.y = 150;
+      game.rightPaddle.y = 150;
+      
+      gameLoop();
+    }
+    
+    // Stop game
+    function stopPong() {
+      gameRunning = false;
+      pongOverlay.style.display = 'none';
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+      game.keys = {};
+    }
+    
+    // Event listeners
+    document.getElementById('secret-game-btn').addEventListener('click', startPong);
+    document.getElementById('exit-pong').addEventListener('click', stopPong);
+    
+    // Keyboard controls (only for player paddle)
+    document.addEventListener('keydown', function(e) {
+      if (gameRunning) {
+        game.keys[e.key] = true;
+      }
+    });
+    
+    document.addEventListener('keyup', function(e) {
+      if (gameRunning) {
+        game.keys[e.key] = false;
+      }
+    });
+    
+    // Prevent default behavior for W/S keys when game is running
+    document.addEventListener('keydown', function(e) {
+      if (gameRunning && ['w', 's', 'W', 'S'].includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
