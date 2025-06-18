@@ -3,525 +3,432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mindfully Referral Status Report</title>
+    <title>Referral Directory</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: white;
-            color: black;
-            line-height: 1.4;
+            background-color: #f5f5f5;
         }
         
-        .header {
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 300px;
+            height: auto;
+        }
+        
+        h1 {
+            color: #333;
             text-align: center;
             margin-bottom: 30px;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .dropdown-section {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        select:disabled {
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+        
+        .office-info {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+            display: none;
+        }
+        
+        .office-info h2 {
+            color: #333;
+            margin-top: 0;
             margin-bottom: 15px;
         }
         
-        .logo-img {
-            height: 40px;
-            width: auto;
-            margin-right: 10px;
-            object-fit: contain;
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
         }
         
-        .logo-text {
-            font-size: 28px;
-            font-weight: bold;
-            color: #8B5CF6;
+        .info-item {
+            margin-bottom: 10px;
         }
         
-        .form-title {
-            font-size: 18px;
+        .info-label {
             font-weight: bold;
+            color: #666;
+            margin-bottom: 3px;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        .providers-section {
             margin-top: 20px;
-            text-align: center;
         }
         
-        .form-row {
+        .providers-list {
             display: flex;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-        
-        .form-row label {
-            font-weight: bold;
-            margin-right: 10px;
-            min-width: 80px;
-        }
-        
-        .form-row input[type="text"], .form-row input[type="date"] {
-            flex: 1;
-            border: none;
-            border-bottom: 1px solid #000;
-            padding: 2px 5px;
-            font-size: 14px;
-        }
-        
-        .hipaa-notice {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 12px;
-            line-height: 1.3;
-        }
-        
-        .status-section {
-            margin: 30px 0;
-        }
-        
-        .status-intro {
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        
-        .checkbox-group {
-            margin: 10px 0;
-        }
-        
-        .checkbox-row {
-            display: flex;
-            align-items: flex-start;
-            margin: 8px 0;
-        }
-        
-        .checkbox-row input[type="checkbox"] {
-            margin-right: 10px;
-            margin-top: 3px;
-        }
-        
-        .checkbox-content {
-            flex: 1;
-        }
-        
-        .inline-fields {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
             flex-wrap: wrap;
-        }
-        
-        .inline-fields input {
-            border: none;
-            border-bottom: 1px solid #000;
-            padding: 2px 5px;
-            min-width: 100px;
-        }
-        
-        .sub-options {
-            margin-left: 30px;
+            gap: 10px;
             margin-top: 10px;
         }
         
-        .sub-options .checkbox-row {
-            margin: 5px 0;
+        .provider-tag {
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
         }
         
-        .footer {
-            margin-top: 40px;
-            text-align: center;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-        }
-        
-        .contact-info {
-            font-size: 12px;
-            line-height: 1.4;
-        }
-        
-        .specialist-name {
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        .specialist-name label {
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        
-        .specialist-name input {
-            border: none;
-            border-bottom: 1px solid #000;
-            padding: 2px 5px;
-            flex: 1;
-            max-width: 200px;
-        }
-        
-        .thank-you {
-            font-style: italic;
-            margin: 20px 0;
-            text-align: center;
-        }
-        
-        @media print {
-            * {
-                -webkit-print-color-adjust: exact !important;
-                color-adjust: exact !important;
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
             }
             
-            @page {
-                size: letter;
-                margin: 0.75in;
+            .container {
+                padding: 20px;
             }
             
-            body {
-                margin: 0;
-                padding: 0;
-                width: auto;
-                max-width: none;
-                font-size: 11pt;
-                line-height: 1.3;
-                color: black;
-            }
-            
-            .action-buttons {
-                display: none !important;
-            }
-            
-            .header {
-                margin-bottom: 15pt;
-            }
-            
-            .logo-text {
-                font-size: 20pt;
-            }
-            
-            .form-title {
-                font-size: 14pt;
-                margin-top: 10pt;
-            }
-            
-            .form-row {
-                margin-bottom: 8pt;
-                font-size: 10pt;
-            }
-            
-            .form-row input[type="text"], 
-            .form-row input[type="date"] {
-                font-size: 10pt;
-                min-width: 120px;
-            }
-            
-            .hipaa-notice {
-                font-size: 9pt;
-                margin: 12pt 0;
-                padding: 8pt;
-                page-break-inside: avoid;
-            }
-            
-            .status-section {
-                font-size: 10pt;
-                margin: 15pt 0;
-            }
-            
-            .status-intro {
-                font-size: 10pt;
-                margin-bottom: 8pt;
-            }
-            
-            .checkbox-row {
-                margin: 4pt 0;
-                page-break-inside: avoid;
-                font-size: 10pt;
-            }
-            
-            .inline-fields {
-                margin-top: 3pt;
-            }
-            
-            .inline-fields input {
-                font-size: 10pt;
-                min-width: 80px;
-            }
-            
-            .sub-options {
-                margin-left: 20pt;
-                font-size: 9pt;
-            }
-            
-            .specialist-name {
-                font-size: 10pt;
-                margin: 12pt 0;
-            }
-            
-            .thank-you {
-                font-size: 10pt;
-                margin: 12pt 0;
-            }
-            
-            .footer {
-                margin-top: 15pt;
-                padding-top: 8pt;
-            }
-            
-            .contact-info {
-                font-size: 9pt;
-            }
-            
-            input[type="text"], input[type="date"], input[type="time"] {
-                border-bottom: 1px solid #000 !important;
-                background: transparent !important;
-                color: black !important;
+            .logo {
+                max-width: 250px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <img src="./logo.png" alt="Mindfully Logo" class="logo-img">
+    <div class="container">
+        <img src="mi.png" alt="Mindfully Intake" class="logo">
+        <h1>Referral Directory</h1>
+        
+        <div class="dropdown-section">
+            <label for="organizationSelect">Select Healthcare Organization:</label>
+            <select id="organizationSelect">
+                <option value="">-- Choose Organization --</option>
+                <option value="trihealth">TriHealth</option>
+                <option value="mercy health">Mercy Health</option>
+                <option value="central ohio primary care">COPCP (Central Ohio Primary Care)</option>
+            </select>
         </div>
-        <div class="form-title">REFERRAL STATUS REPORT</div>
+        
+        <div class="dropdown-section">
+            <label for="officeSelect">Select Office:</label>
+            <select id="officeSelect" disabled>
+                <option value="">-- First select an organization --</option>
+            </select>
+        </div>
+        
+        <div id="officeInfo" class="office-info">
+            <h2 id="officeName"></h2>
+            <div class="info-grid">
+                <div>
+                    <div class="info-item">
+                        <div class="info-label">Address:</div>
+                        <div class="info-value" id="officeAddress"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Phone:</div>
+                        <div class="info-value" id="officePhone"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Fax:</div>
+                        <div class="info-value" id="officeFax"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="info-item">
+                        <div class="info-label">City, State ZIP:</div>
+                        <div class="info-value" id="officeCityState"></div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Organization:</div>
+                        <div class="info-value" id="officeOrg"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="providers-section">
+                <div class="info-label">Healthcare Providers:</div>
+                <div id="providersList" class="providers-list"></div>
+            </div>
+        </div>
     </div>
 
-    <form id="referralForm">
-        <div class="form-row">
-            <label>Date:</label>
-            <input type="date" name="date" id="date">
-            <label style="margin-left: 40px;">Referent:</label>
-            <input type="text" name="referent" style="flex: 2;">
-        </div>
-        
-        <div class="form-row">
-            <label>ATTN:</label>
-            <input type="text" name="attn" style="flex: 1; margin-right: 20px;">
-            <label>Fax No.:</label>
-            <input type="text" name="fax" style="flex: 1;">
-        </div>
-
-        <div class="hipaa-notice">
-            This fax and any accompanying documents may contain confidential and privileged information protected under the Health Insurance Portability and Accountability Act (HIPAA), 45 CFR Parts 160 and 164. This information is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are hereby notified that any review, dissemination, distribution, or duplication of this communication is strictly prohibited.<br><br>
-            If you have received this fax in error, please notify the sender immediately by email at <strong>intake@mindfully.com</strong> and destroy all copies of the original message.<br><br>
-            Thank you for your cooperation in maintaining the confidentiality and privacy of protected health information (PHI)
-        </div>
-
-        <div class="form-row">
-            <label>Patient Name:</label>
-            <input type="text" name="patientName" style="flex: 1; margin-right: 20px;">
-            <label>Patient DOB:</label>
-            <input type="date" name="patientDOB" style="flex: 1;">
-        </div>
-
-        <div class="status-section">
-            <div class="status-intro">
-                Your patient was recently contacted by our staff for services after receiving your referral.<br>
-                <strong>Please see the below options for status:</strong>
-            </div>
-
-            <div class="checkbox-group">
-                <div class="checkbox-row">
-                    <input type="checkbox" name="status" value="clinical-therapist">
-                    <div class="checkbox-content">
-                        Patient scheduled with a clinical therapist:
-                        <div class="inline-fields">
-                            <input type="text" placeholder="(clinician)" name="clinician"> on
-                            <input type="date" name="clinicianDate"> at
-                            <input type="time" name="clinicianTime">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="checkbox-row">
-                    <input type="checkbox" name="status" value="psychiatry-med">
-                    <div class="checkbox-content">
-                        Patient scheduled with psychiatry/med. mgmt:
-                        <div class="inline-fields">
-                            <input type="text" placeholder="(provider)" name="psychiatryProvider"> on
-                            <input type="date" name="psychiatryDate"> at
-                            <input type="time" name="psychiatryTime">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="checkbox-row">
-                    <input type="checkbox" name="status" value="psychiatry-tms">
-                    <div class="checkbox-content">
-                        Patient scheduled with psychiatry/TMS:
-                        <div class="inline-fields">
-                            <input type="text" placeholder="(provider)" name="tmsProvider"> on
-                            <input type="date" name="tmsDate"> at
-                            <input type="time" name="tmsTime">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="checkbox-row">
-                    <input type="checkbox" name="status" value="unavailable">
-                    <div class="checkbox-content">
-                        After 3 attempts to connect, the patient was unavailable to take our call and a voicemail was left with detailed information on options for scheduling with a request to call us back at their earliest convenience.
-                    </div>
-                </div>
-
-                <div class="checkbox-row">
-                    <input type="checkbox" name="status" value="unable-contact">
-                    <div class="checkbox-content">
-                        Unable to contact the patient or leave a message, contact information possibly incorrect.
-                    </div>
-                </div>
-
-                <div class="checkbox-row">
-                    <input type="checkbox" name="status" value="already-scheduled">
-                    <div class="checkbox-content">
-                        The patient is already scheduled with one of our providers or is already receiving services.
-                    </div>
-                </div>
-
-                <div class="checkbox-row">
-                    <input type="checkbox" name="status" value="unable-match">
-                    <div class="checkbox-content">
-                        At this time, we have instructed the patient to contact you, as we were unable to match your patient with one of our providers. <strong>(see reason below)</strong>
-                        
-                        <div class="sub-options">
-                            <div class="checkbox-row">
-                                <input type="checkbox" name="unableReason" value="provider-unavailable">
-                                <div class="checkbox-content">
-                                    Provider not available in alignment with patient scheduling needs, preferences (gender or in-office/telehealth) or location.
-                                </div>
-                            </div>
-                            
-                            <div class="checkbox-row">
-                                <input type="checkbox" name="unableReason" value="specialty-unavailable">
-                                <div class="checkbox-content">
-                                    Clinical speciality (e.g. DBT, EMDR) requested does not have any available clinician at this time. The patient was placed on the waitlist.
-                                </div>
-                            </div>
-                            
-                            <div class="checkbox-row">
-                                <input type="checkbox" name="unableReason" value="insurance">
-                                <div class="checkbox-content">
-                                    Unable to locate a provider covered by patient insurance.
-                                </div>
-                            </div>
-                            
-                            <div class="checkbox-row">
-                                <input type="checkbox" name="unableReason" value="other">
-                                <div class="checkbox-content">
-                                    <input type="text" name="otherReason" style="width: 100%; border: none; border-bottom: 1px solid #000;" placeholder="Other reason...">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="specialist-name">
-            <label>Specialist Name:</label>
-            <input type="text" name="specialistName">
-        </div>
-
-        <div class="thank-you">
-            <strong>Thank you for choosing Mindfully. Please feel free to reach out with any questions or concerns.</strong>
-        </div>
-
-        <div class="footer">
-            <div class="contact-info">
-                <strong>T:</strong> 888-830-0347 <strong>F:</strong> 513-939-0310 <strong>E:</strong> intake@mindfully.com <strong>W:</strong> www.mindfully.com<br>
-                <strong>A:</strong> 10290 Alliance Rd., Cincinnati, OH 45242
-            </div>
-        </div>
-    </form>
-
     <script>
-        // Auto-fill today's date
-        document.getElementById('date').valueAsDate = new Date();
-        
-        // Print functionality
-        function printForm() {
-            window.print();
+        // Data embedded as JavaScript object
+        const officesData = [
+            {"sourceName":"trihealth","officeName":"Bethel Family Practice","street1":"210 N. Union St.","street2":"","city":"Bethel","state":"OH","zip":"45106","phone":"513-734-9050","fax":"","providers":["Candes Jandes, CNP","Samantha Jeffries, CNP","Heather Marie Owens, MD","Abby Pritchard, CNP"]},
+            {"sourceName":"trihealth","officeName":"Bethesda Family Practice Center","street1":"1775 West Lexington","street2":"Suite 100","city":"Cincinnati","state":"OH","zip":"45212","phone":"513-977-6700","fax":"513-531-2624","providers":["Elizabeth Beiter, MD","Amanda Goodale, DO","Richard Okragly, MD","Jonathan Sorscher, MD","Michael Webb, MD","Scott Woods, MD","Stephen Zitelli, MD"]},
+            {"sourceName":"trihealth","officeName":"Bethesda Group Practice – Milford","street1":"5861 Cinema Drive","street2":"","city":"Milford","state":"OH","zip":"45150","phone":"513-248-8800","fax":"","providers":["Fadi Bailony, MD","Mohammad Fattal, MD","Stephanie Schmidt, MD","Mathew Simon, DO","Elizabeth Wang, CNP"]},
+            {"sourceName":"trihealth","officeName":"Bethesda Medical Center at Arrow Springs","street1":"100 Arrow Springs Blvd.","street2":"","city":"Lebanon","state":"OH","zip":"45036","phone":"513-282-7000","fax":"","providers":[]},
+            {"sourceName":"trihealth","officeName":"Blue Ash Internal Medicine","street1":"4260 Glendale-Milford Road","street2":"Suite 101","city":"Cincinnati","state":"OH","zip":"45242","phone":"513-745-9993","fax":"513-852-1483","providers":["Leona Bowman, MD","Monica Brown, CNP","Parool Kadakia, MD"]},
+            {"sourceName":"trihealth","officeName":"Good Samaritan Faculty Medical Center","street1":"375 Dixmyth Avenue","street2":"5th Floor","city":"Cincinnati","state":"OH","zip":"45220","phone":"513-862-1800","fax":"","providers":[]},
+            {"sourceName":"trihealth","officeName":"Good Samaritan Free Health Center","street1":"3727 St. Lawrence Ave.","street2":"","city":"Cincinnati","state":"OH","zip":"45205","phone":"513-246-6888","fax":"","providers":[]},
+            {"sourceName":"trihealth","officeName":"Group Health Anderson","street1":"7794 Five Mile Road","street2":"","city":"Cincinnati","state":"OH","zip":"45230","phone":"513-246-7000","fax":"","providers":[]},
+            {"sourceName":"trihealth","officeName":"Group Health Clifton","street1":"379 Dixmyth Ave.","street2":"","city":"Cincinnati","state":"OH","zip":"45220","phone":"513-246-7000","fax":"513-246-7590","providers":["John Alford, DO","Amanda Chaney, DO","Nicholas Denlinger, CNP","Anna Friend, MD","Anjuli Mahajan, MD","Lee Niemeyer, MD","Paige Heimann De Buys, MD","Matthew Harden, DO","Jessica Jobert, CNP","David Lustig, MD","Robert Oliver, MD","Rushyal Shyamraj, MD","Trisha Weeks, CNP"]},
+            {"sourceName":"trihealth","officeName":"Group Health Kenwood","street1":"8240 Northcreek Drive","street2":"","city":"Cincinnati","state":"OH","zip":"45236","phone":"513-246-7000","fax":"513-246-5484","providers":[]},
+            {"sourceName":"trihealth","officeName":"Group Health Mason","street1":"6010 Mason-Montgomery Road","street2":"","city":"Mason","state":"OH","zip":"45040","phone":"513-246-7000","fax":"513-204-6355","providers":["Lindsay Darkins, MD","Jill Manahan, DO","Justin  Spencer, MD","Claire Cunningham, MD","Jay Hayner, MD","Kai Huang, MD","Antonio Rojas, MD"]},
+            {"sourceName":"trihealth","officeName":"Group Health West Chester","street1":"8040 Princeton-Glendale Road","street2":"","city":"West Chester","state":"OH","zip":"45069","phone":"513-246-7000","fax":"513-246-5479","providers":["Steven Jung, MD","Alexandra Lawson, MD","Carly Morgan, DO","Douglas Thompson, DO","Renee Canfield, CNP","Jenna Elsner, CNP","Sarah Fedyk, MD","Wahija Koomal, MD","Ronald Smith, MD","Chadd Todd, MD"]},
+            {"sourceName":"trihealth","officeName":"Group Health Western Hills","street1":"2001 Anderson Ferry Rd.","street2":"","city":"Cincinnati","state":"OH","zip":"45238","phone":"513-246-7000","fax":"","providers":["Tracy Mead Stave, CNP","Raymond Reuss, MD","Kathleen Schalk, CNP","Kimberly Seltzer, MD","Yogesh Sharma, MD","Rachel Thomas, DO"]},
+            {"sourceName":"trihealth","officeName":"Health First Physicians ‒ Loveland","street1":"10675A Loveland-Madeira Road","street2":"","city":"Loveland","state":"OH","zip":"45140","phone":"513-774-8220","fax":"","providers":["Kelly Arey, DO","Kimberly Bethea, MD","Donald Clark, MD","Stephanie Cockrill, MD","Neama Esmaili, MD","Jodi Harvey, MD","Barbara Neuman, CNP","Gregory Noble, MD","Annmarie Sagraves, PA-C","Yueting Yang, MD","Emily Lyon, LISW-S "]},
+            {"sourceName":"trihealth","officeName":"Health First Physicians ‒ Mariemont","street1":"7225 Wooster Pike","street2":"","city":"Cincinnati","state":"OH","zip":"45227","phone":"513-272-0250","fax":"","providers":["Emily Armbruster, MD","David Hayes, DO","Nicole Puterbaugh, CNP"]},
+            {"sourceName":"trihealth","officeName":"Health First Physicians ‒ Mason","street1":"7423 South Mason-Montgomery Road","street2":"Suite B","city":"Mason","state":"OH","zip":"45040","phone":"513-398-3445","fax":"","providers":["Alicia Bachus, MD","Brian Hoffman, MD","Lauren Hruszkewycz, MD","Sara Khaja, MD","Betsy Peerless, MD","Courtney-Lynn Stahl, MD"]},
+            {"sourceName":"trihealth","officeName":"Internal Medicine Associates","street1":"10495 Montgomery Road","street2":"Suite 15","city":"Cincinnati","state":"OH","zip":"45242","phone":"513-936-8900","fax":"","providers":["Rosa Robles, MD","Paula Villarejo, MD"]},
+            {"sourceName":"trihealth","officeName":"Montgomery Family Medicine","street1":"11029 Montgomery Road","street2":"","city":"Cincinnati","state":"OH","zip":"45249","phone":"513-891-2211","fax":"","providers":["Casey Gallagher, MD","Subhra Jana, DO","Anne Jennings, CNP","Lea Jordan, CNP","Sarah Kindt, DO","Douglas Moody, MD","Joyce Panganamala, PA-C","Peter Siegel, MD","Anne Vaz, CNP","Richard Vonder Brink, MD"]},
+            {"sourceName":"trihealth","officeName":"Oxford Internal Medicine","street1":"5151 Morning Sun Road","street2":"Suite D","city":"Oxford","state":"OH","zip":"45056","phone":"513-523-4195","fax":"513-523-4353","providers":["Christian Adams-Carey, MD","Brent Bader, MD","Molly Emmert, MD","Kayleigh Geiser, CNP","Amneet Khera, DO","Taylor Myers, CNP"]},
+            {"sourceName":"trihealth","officeName":"Oxford Internal Medicine - Brookville","street1":"10058 Cooley Road","street2":"Suite B","city":"Brookville","state":"IN","zip":"47012","phone":"765-647-3557","fax":"765-647-2977","providers":[]},
+            {"sourceName":"trihealth","officeName":"Oxford Internal Medicine - College Corner","street1":"121 West Liberty Avenue W","street2":"","city":"College Corner","state":"IN","zip":"47003","phone":"765-732-3114","fax":"765-732-3903","providers":[]},
+            {"sourceName":"trihealth","officeName":"Physician Associates of Good Samaritan – Delhi","street1":"425 Farrell Court","street2":"","city":"Cincinnati","state":"OH","zip":"45233","phone":"513-451-6871","fax":"","providers":["Sarah Curry, CNP","Joseph Huschart, MD","Rhazes Kevin Khodadad, MD","Scott Massa, MD","Raymond Metzger, MD","Megan Pflum, CNP"]},
+            {"sourceName":"trihealth","officeName":"Physician Associates of Good Samaritan – Northwest","street1":"3035 Hamilton-Mason Road","street2":"Suite 203","city":"Hamilton","state":"OH","zip":"45011","phone":"513-741-7200","fax":"","providers":["Aparna Ambe, MD","Hajra Shahbaz Cheema, MD","Uma Santhanam, MD","Holly Ait Taouit, PsyD"]},
+            {"sourceName":"trihealth","officeName":"Queen City Medical Group – Anderson","street1":"7991 Beechmont Ave","street2":"","city":"Cincinnati","state":"OH","zip":"45255","phone":"513-528-5600","fax":"","providers":["Maria Diener, CNP","Diane Dolensky, MD","Fabiola Feldhaus, MD","Michel Kourie, MD","Sorina Macavei, MD","Paul Massoud, MD","Ashlee Schaa, CNP","Timothy Williams, MD"]},
+            {"sourceName":"trihealth","officeName":"Queen City Physicians - Hyde Park Internal Medicine","street1":"2753 Erie Avenue","street2":"","city":"Cincinnati","state":"OH","zip":"45208","phone":"513-246-8000","fax":"","providers":["Marinda Benjamin, CNP","Melissa Shields Brinkman, CNP","Jessica Cassady, MD","G. Stephen Cleves, MD","Taylor Furbay, CNP","Alisa Paulus, CNP","Elizabeth Royse, CNP","Mara Sponseller, MD","Sarah St. Cyr, MD","Joshua Stephens, DO","Robert Thaler, MD","Nicole Bishwaty, MSN, FNP-C","Nicole Tafuri, CNP"]},
+            {"sourceName":"trihealth","officeName":"Queen City Physicians - Madeira Internal Medicine","street1":"7825 Laurel Avenue","street2":"","city":"Cincinnati","state":"OH","zip":"45243","phone":"513-561-4811","fax":"","providers":["Suhail Chaudhry, MD","Yana Kholodenko, MD","Eshwar Holenarsipur Ramadas, MD"]},
+            {"sourceName":"trihealth","officeName":"Queen City Physicians - University Station","street1":"1775 Lexington Avenue","street2":"Suite 150","city":"Cincinnati","state":"OH","zip":"45212","phone":"513-246-8000","fax":"","providers":["Jonathan Buck, MD","Lorraine Stephens, MD"]},
+            {"sourceName":"trihealth","officeName":"Queen City Physicians - Western Hills Internal Medicine","street1":"6350 Glenway Avenue","street2":"3rd Floor","city":"Cincinnati","state":"OH","zip":"45211","phone":"513-481-3400","fax":"","providers":["Stephanie Becker, CNP","Amanda Bohannon, CNP","Kara Jaeger, PA-C","Roshni Shetty, MD","Prudence Takougang, MD","Kyle Taylor, MD","Alexandra Taylor, MD"]},
+            {"sourceName":"trihealth","officeName":"Queen City Physicians - Western Ridge Internal Medicine","street1":"6949 Good Samaritan Drive","street2":"Second Floor","city":"Cincinnati","state":"OH","zip":"45247","phone":"513- 931-2400","fax":"","providers":["Colton Briggs, DO","Kendra Hall, DO","Jacob Hill, DO","Alexandra Kreiselman, MD","Allen Guowen Liew, MD","Charles Thiemann, DO","Robert Travez, MD","Hana Winchester, MD"]},
+            {"sourceName":"trihealth","officeName":"Queen City Physicians - Xavier University","street1":"1723 Cleneay Avenue","street2":"","city":"Cincinnati","state":"OH","zip":"45212","phone":"513- 745-3022","fax":"","providers":["Pacita David, MD","Heather Schibi, CNP"]},
+            {"sourceName":"trihealth","officeName":"TriHealth Glenwood Family Practice - Finneytown","street1":"740 Galbraith Road","street2":"","city":"Cincinnati","state":"OH","zip":"45231","phone":"513-771-0800","fax":"","providers":["Alyssa Brogden, DO","Shyla Dyer, MD","Mikaela Moore, MD","Maya Prabhu, MD","Smita Saraf, MD","Usha Shenai, MD"]},
+            {"sourceName":"trihealth","officeName":"TriHealth Internal Medicine - Finneytown","street1":"740 Galbraith Road","street2":"","city":"Cincinnati","state":"OH","zip":"45231","phone":"513-246-7000","fax":"513-728-4344","providers":["Cody Miller, DO","Spencer Wade, DO"]},
+            {"sourceName":"trihealth","officeName":"TriHealth Kings Mills Family Medicine","street1":"2162 Kings Mills Road","street2":"","city":"Mason","state":"OH","zip":"45040","phone":"513-246-2260","fax":"","providers":["Rhoda Chamberlain, CNP","Aleesha Montoya, MD","Nathan Wiedemann, MD"]},
+            {"sourceName":"trihealth","officeName":"TriHealth Physician Partners - Wilmington","street1":"1184 Locust Street","street2":"","city":"Wilmington","state":"OH","zip":"45177","phone":"937-382-1616","fax":"937-382-7877","providers":["Tiffany Burroughs, CNP","Laura Clutter, CNP","Mary Inwood, MD","Regina Lahmann, CNP","Holly Lamb, CNP","Sheila Llanes-Diopita, MD","Katy Meeker, CNP","John Merling, MD","Ross Wickstrom, CNP"]},
+            {"sourceName":"trihealth","officeName":"TriHealth Physician Partners Arrow Springs","street1":"100 Arrow Springs Blvd.","street2":"Suite 2700","city":"Lebanon","state":"OH","zip":"45036","phone":"513-282-7911","fax":"","providers":["Monica Brown, CNP","Kanooz Chaudhary, MD","Paul Jentes, DO","Samia Kanooz, MD","Lindsay Lovell, CNP","Peter Nguyen, MD","Scott Strait, MD"]},
+            {"sourceName":"trihealth","officeName":"TriHealth Physician Partners Delhi Pike","street1":"5314 Delhi Pike","street2":"","city":"Cincinnati","state":"OH","zip":"45238","phone":"513-347-6922","fax":"513-347-6955","providers":["Melissa Schroer, MD","Kara Jaeger, PA-C","Nicole Overbeck, PA-C"]},
+            {"sourceName":"trihealth","officeName":"TriHealth Women's Center Kenwood","street1":"8240 Northcreek Drive","street2":"Suite 4100","city":"Cincinnati","state":"OH","zip":"45236","phone":"513-853-7555","fax":"","providers":["Anantha Brahmamdam, MD","Neha Gandhi, MD","Emilee Hayden, CNP","Mali Jurkowski, MD","Michelle Louis, MD","Yvette Neirouz, MD","Michelle Box, LISW"]},
+            {"sourceName":"trihealth","officeName":"West Chester Medical Group","street1":"8020 Liberty Way","street2":"","city":"West Chester","state":"OH","zip":"45069","phone":"513-777-8300","fax":"","providers":["Shoaib Asgher, MD","Michael Bernardon, MD","Arnold Drummond, MD","Gurpreet Kaur, DO","Fatema Nassar, DO","Omar Siddiqi, MD","Michelle Wiedemann, MD","Joshua Williams, CNP"]},
+            {"sourceName":"trihealth","officeName":"Western Family Physicians","street1":"3425 North Bend Road","street2":"","city":"Cincinnati","state":"OH","zip":"45239","phone":"513-853-4900","fax":"","providers":["Lauren Cruse, MD","Michelle Groves, MD","Stephanie Hunstad, MD","Ann McCarthy, CNP","Amy Neal, MD","Amy Ruschulte, MD"]},
+            {"sourceName":"trihealth","officeName":"White Oak Family Practice","street1":"7631 Cheviot Road","street2":"","city":"Cincinnati","state":"OH","zip":"45247","phone":"513-923-1886","fax":"","providers":["Kelly Brown, MD","Thomas Green, MD","Nicholas Parkinson, CNP","Patrick Reilly, MD","Eugene Reilly, MD"]},
+            {"sourceName":"trihealth","officeName":"Bethesda Butler Hospital","street1":"3125 Hamilton Mason Rd","street2":"","city":"Hamilton","state":"OH","zip":"45011","phone":"513-894-8888","fax":"513-895-1247","providers":[]},
+            {"sourceName":"trihealth","officeName":"Bethesda Medical Center at Arrow Springs","street1":"100 Arrow Springs Blvd.","street2":"","city":"Lebanon","state":"OH","zip":"45036","phone":"513-282-7000","fax":"513-891-7354","providers":[]},
+            {"sourceName":"trihealth","officeName":"Bethesda North Hospital","street1":"10500 Montgomery Road","street2":"","city":"Cincinnati","state":"OH","zip":"45242","phone":"513-865-1111","fax":"","providers":[]},
+            {"sourceName":"trihealth","officeName":"Good Samaritan Hospital","street1":"375 Dixmyth Avenue","street2":"","city":"Cincinnati","state":"OH","zip":"45220","phone":"513-862-1400","fax":"","providers":[]},
+            {"sourceName":"trihealth","officeName":"Good Samaritan Medical Center - Western Ridge","street1":"6949 Good Samaritan Drive","street2":"","city":"Cincinnati","state":"OH","zip":"45247","phone":"513-246-9800","fax":"","providers":[]},
+            {"sourceName":"trihealth","officeName":"McCullough-Hyde Memorial Hospital","street1":"110 N. Poplar St.","street2":"","city":"Oxford","state":"OH","zip":"45056","phone":"513-523-2111","fax":"","providers":[]},
+            {"sourceName":"central ohio primary care","officeName":"Worthington Pediatrics","street1":"890 High Street","street2":"Suite 200","city":"Worthington","state":"OH","zip":"43085","phone":"614-540-7339","fax":"614-540-7338","providers":["Nardia Ataman, MD","Zorica Bjelovuk, CNP","Angie Waldman, CPNP, IBCLC"]},
+            {"sourceName":"mercy health","officeName":"Adams County Family Medicine","street1":"17862 State Route 247","street2":"","city":"Seaman","state":"OH","zip":"45679","phone":"937-695-0748","fax":"","providers":["Ashley Wellman, APRN-CNP","Morgan Paul, MD","Tyler Campbell, MD"]},
+            {"sourceName":"mercy health","officeName":"Amberly Primary Care","street1":"8599 Ridge Rd.","street2":"","city":"Cincinnati","state":"OH","zip":"45236","phone":"513-418-5700","fax":"","providers":["Shreenivasan Shanmugam, MD","Scott Kotzin, DO","Jordan Austin, DO"]},
+            {"sourceName":"mercy health","officeName":"Anderson Family Medicine","street1":"8000 Five Mile Rd.","street2":"Suite 205","city":"Cincinnati","state":"OH","zip":"45230","phone":"513-624-1240","fax":"513-233-6983","providers":["Monica Sedmak, PA-C","Julie Bruns, PA-C","Anne Dillon, MD"]},
+            {"sourceName":"mercy health","officeName":"Anderson Hills Internal Medicine","street1":"8000 Five Mile Rd.","street2":"Suite 305","city":"Cincinnati","state":"OH","zip":"45230","phone":"513-232-3500","fax":"513-624-1290","providers":["Alexis Rod, APRN-CNP","Carol Allman, APRN-CNP","Dinesh Chauwan, MD","Justin York, DO","Ben Werneke, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Anderson Hospital Family & Community Medicine Residency Practice","street1":"8000 Five Mile Rd.","street2":"Suite 100","city":"Cincinnati","state":"OH","zip":"45230","phone":"513-233-6980","fax":"","providers":["Allegra Tenkman, MD","Paula Peake, MD","Roberta Kern, MD","James O'Dea, MD","Rebecca Morris, MD","Daniel Kim, MD","Farzad Mazloomi, MD","Katheryne Ruck, DO","Jamelle Bowers, MD","Myles Barlow, DO","Stephen Feagins, MD"]},
+            {"sourceName":"mercy health","officeName":"Anderson Primary Care","street1":"7502 State Rd","street2":"Suite 3310","city":"Cincinnati","state":"OH","zip":"45255","phone":"513-233-2444","fax":"","providers":[]},
+            {"sourceName":"mercy health","officeName":"Avondale Primary Care","street1":"2135 Dana Ave.","street2":"Suite 400","city":"Cincinnati","state":"OH","zip":"45207","phone":"513-585-9500","fax":"513-585-9505","providers":["Jeremiah Davis, MD","Ashley Mallory, MD","Shante Askew, APRN-CNP","Kent Robinson, MD","Patricia Okocha, MD"]},
+            {"sourceName":"mercy health","officeName":"Blue Ash Family Medicine","street1":"4700 E. Galbraith Rd.","street2":"Suite 202","city":"Cincinnati","state":"OH","zip":"45236","phone":"513-891-5532","fax":"513-924-8369","providers":["Lauren Gettelfinger, APRN-CNP","Brian Peerless, MD","Arianna Warfel, APRN-CNP","Erika Osterbrock, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Center of Excellence, Internal Medicine Residency Practice","street1":"1508 John St","street2":"Suite B","city":"Cincinnati","state":"OH","zip":"45214","phone":"513-598-3900","fax":"513-598-3919","providers":["Stephen Feagins, MD"]},
+            {"sourceName":"mercy health","officeName":"Deerfield Family Medicine","street1":"5232 Socialville-Fosters Rd.","street2":"","city":"Mason","state":"OH","zip":"45040","phone":"513-339-0800","fax":"513-339-0790","providers":["Sarah Mason, APRN-CNP","Michael Trombley, MD","Sarah Mergy, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Delhi Primary Care","street1":"5310 Rapid Run Road","street2":"Suite 201","city":"Cincinnati","state":"OH","zip":"45238","phone":"513-215-0290","fax":"513-215-0291","providers":["Katrina Fernandez, APRN-CNP","Morgan Pennekamp, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Dent Crossing Family Medicine","street1":"6507 Harrison Ave.","street2":"Suite N","city":"Cincinnati","state":"OH","zip":"45247","phone":"513-981-4242","fax":"513-347-5050","providers":["Angela Wuebbling, APRN-CNP","Joseph Seibert, MD","Matthew Gaffney, MD","Melissa Fulton, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Dry Ridge Family Medicine","street1":"4130 Dry Ridge Rd.","street2":"","city":"Cincinnati","state":"OH","zip":"45252","phone":"513-981-5162","fax":"513-923-5522","providers":["Timothy Roark, APRN-CNP","Lindsey Buelterman, APRN-CNP","Charlene Cureton, APRN-CNP","Daniel Kim, MD"]},
+            {"sourceName":"mercy health","officeName":"Eastgate Family Medicine","street1":"601 Ivy Gateway","street2":" Suite 2100","city":"Cincinnati","state":"OH","zip":"45245","phone":"513-752-8000","fax":"513-752-1078","providers":["Megan Krallman Cook, DO","Betsy Drake, MD","Sarah Wilson, PA-C","Sotirios Koros, DO","Kathryn Clarke, APRN-CNP","Debra Purvis-Heaton, APRN-CNP","Lauren Herzfeld, PA-C","Andrea Brunacini, APRN-CNP","Aaron Schklar, DO","Megan Meyer, PA-C","Kiersten Brown, MD"]},
+            {"sourceName":"mercy health","officeName":"Evendale Family Medicine","street1":"10475 Reading Rd.","street2":" Suite 405","city":"Cincinnati","state":"OH","zip":"45241","phone":"513-585-9600","fax":"513-585-9668","providers":["Priyanka Kakar, MD","Rocio Tussey, MD","Jamie Fields, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Fairfield Family Medicine","street1":"741-A Wessel Dr.","street2":"","city":"Fairfield","state":"OH","zip":"45014","phone":"513-829-2614","fax":"513-829-0177","providers":["Rebecca Koehl, MD","Megan Houser, APRN-CNP","Megan Miller, DO","Shauna Wojciechowski, APRN-CNP","Richard Banks Jr., MD"]},
+            {"sourceName":"mercy health","officeName":"Fairfield Hospital Internal Medicine Residency Practice","street1":"2990 Mack Rd ","street2":"Suite 107","city":"Fairfield","state":"OH","zip":"45014","phone":"513-870-7800","fax":"","providers":["Sudhindra Pydimarri, MD","Robert Battisti, MD"]},
+            {"sourceName":"mercy health","officeName":"Fairfield Internal Medicine","street1":"544 Patterson Blvd","street2":"","city":"Fairfield","state":"OH","zip":"45014","phone":"513-896-9595","fax":"","providers":["Kendra Lykins, APRN-CNP","Coleen McCormick, APRN-CNP","Samar Hijazi, MD","Samantha Wood, DO","Ziad Khatib, MD","Md Wahidul Islam, MD","Neel Patel, DO","Diane Armstrong, MD","Katherine Keating, APRN-CNP","Kevin Hartman, MD","Jason Ulitzsch, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Forest Hills Family Medicine","street1":"7575 Five Mile Road","street2":"","city":"Cincinnati","state":"OH","zip":"45230","phone":"513-232-7100","fax":"513-232-6975","providers":["Emilie Grosheim, APRN-CNP","Taya Lewis, APRN-CNP","Risa Spieldoch, MD","Cameron Stump, MD","Natalie Badawi, APRN-CNP","James O'Dea, MD","Ebenezer Enchia Jr., MD"]},
+            {"sourceName":"mercy health","officeName":"Forest Park Internal Medicine and Pediatrics","street1":"11550 Winton Rd.","street2":"","city":"Cincinnati","state":"OH","zip":"45240","phone":"513-924-8200","fax":"","providers":["Jamesha Ford, DO","Emmett Roper Jr., MD","Stephen Wilson, MD","Alaba Robinson, MD","Leoma Lavender, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Georgetown Family Medicine (Temporarily Closed)","street1":"4881 State Route 125","street2":"","city":"Georgetown","state":"OH","zip":"45121","phone":"937-378-2526","fax":"","providers":[]},
+            {"sourceName":"mercy health","officeName":"Harrison Primary Care","street1":"10450 New Haven Rd.","street2":"Suite 5","city":"Harrison","state":"OH","zip":"45030","phone":"513-981-5852","fax":"513-367-8031","providers":["Jane Blinzler, MD","Amy Spivey, MD","Ashlyn McCullough, APRN-CNP","Lisa Lengerich, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Kenwood Concierge Primary Care","street1":"4750 E Galbraith Rd","street2":"Suite 105","city":"Cincinnati","state":"OH","zip":"45236","phone":"513-745-2199","fax":"","providers":["Suzanne Matunis, MD","Mary Mosko, MD"]},
+            {"sourceName":"mercy health","officeName":"Kenwood Family Medicine","street1":"4750 E. Galbraith Rd.","street2":"Suite 210","city":"Cincinnati","state":"OH","zip":"45236","phone":"513-686-4830","fax":"","providers":["Christopher Sweeney, MD","Luke Glischinski, APRN-CNP","Laura Sanchez, MD","Michael Butrey, MD"]},
+            {"sourceName":"mercy health","officeName":"Kenwood Internal Medicine","street1":"4750 E. Galbraith Rd.","street2":"Suite 111","city":"Cincinnati","state":"OH","zip":"45236","phone":"513-686-4840","fax":"","providers":["Robert Rubin, MD","Barry Brook, MD","Adi Carmi, MD","Huong Nguyen, MD","Sydney Saxena, MD","Deborah Farber, MD","David Nartker, MD"]},
+            {"sourceName":"mercy health","officeName":"Kings Mills Primary Care","street1":"5230 Kings Mills Rd.","street2":"","city":"Mason","state":"OH","zip":"45040","phone":"513-981-5820","fax":"","providers":["Todd Bramlee, DO"]},
+            {"sourceName":"mercy health","officeName":"Kyles Station Primary Care","street1":"4652 Partners Place","street2":"","city":"Liberty Township","state":"OH","zip":"45011","phone":"513-603-8720","fax":"513-603-8739","providers":["Dwayne Walker, MD","Carey Budrus, APRN-CNP","Tyler Johnson, MD"]},
+            {"sourceName":"mercy health","officeName":"Liberty Falls Family Medicine","street1":"6770 Cincinnati Dayton Rd.","street2":"Suite 100","city":"Liberty Township","state":"OH","zip":"45044","phone":"513-777-1500","fax":"513-981-4163","providers":["Swetha Narayana, MD","Claire Hendrix, MD","Tiffani Jepson, MD","Monica Hartman, MD"]},
+            {"sourceName":"mercy health","officeName":"Little Miami School Health Center","street1":"7247 Zoar Rd.","street2":"","city":"Maineville","state":"OH","zip":"45039","phone":"513-215-9277","fax":"513-899-3010","providers":["Lauren Long, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Loveland Primary Care","street1":"10562 Loveland Madeira Rd","street2":"","city":"Loveland","state":"OH","zip":"45140","phone":"513-583-6160","fax":"","providers":["Tamara Huson, MD"]},
+            {"sourceName":"mercy health","officeName":"Maineville Primary Care","street1":"6054 S. State Route 48","street2":"","city":"Maineville","state":"OH","zip":"45039","phone":"513-981-5860","fax":"513-981-5869","providers":["Catherine Weathers, APRN-CNPLori Stotz, MD"]},
+            {"sourceName":"mercy health","officeName":"Mason Primary Care","street1":"5075 Parkway Dr","street2":"Suite 101","city":"Mason","state":"OH","zip":"45040","phone":"513-584-6898","fax":"513-584-6897","providers":["Brandy Gettys, MD","Deepti Sharma, MD","Amber Bramlee, APRN-CNP","Amal Sarah, MD","Prashanth Kesav, MD","Dyatra Mitchell, MD"]},
+            {"sourceName":"mercy health","officeName":"Milford Family Medicine","street1":"201 Old Bank Rd.","street2":"Suite 103","city":"Milford","state":"OH","zip":"45150","phone":"513-248-0100","fax":"513-248-4334","providers":["Angela Grantmaier, APRN-CNP","Jennifer MacSwords, DO","James Krempasky, DO","Auditi Kundu, MD","Jai Chirravuri, MD","Barry Rubin, DO","Mary Lim Lee, MD","Brittany Clarke, APRN-CNP","Madeleine Fortener, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Monfort Heights Family Medicine","street1":"3301 Mercy Health Blvd.","street2":"Suite 340","city":"Cincinnati","state":"OH","zip":"45211","phone":"513-981-5922","fax":"513-385-6430","providers":["Paul Day, MD","Courtney Johnson, APRN-CNP","Kristin Brausch, APRN-CNP","Lisa Pomerleau, MD","Kellene Lenz, MD","Jason Mattingly, MD"]},
+            {"sourceName":"mercy health","officeName":"Mt. Orab Family Medicine","street1":"621 Main Street","street2":"","city":"Mt. Orab","state":"OH","zip":"45154","phone":"937-444-0952","fax":"937-444-0953","providers":["Nadeen Kassir, MD","Tonia Conn, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Oak Hills Internal Medicine","street1":"6045 Bridgetown Rd.","street2":"Suite 2","city":"Cincinnati","state":"OH","zip":"45248","phone":"513-981-4105","fax":"","providers":["Jared Galloway, MD","Esana Pokhrel, MD","Sarah Doyle, APRN-CNP","Tiffany Backinger, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Oakley Primary Care","street1":"4631 Ridge Ave.","street2":"Suite B","city":"Cincinnati","state":"OH","zip":"45209","phone":"513-631-1268","fax":"513-366-4121","providers":["Hillary Carnell, DO","Anthony Carnell, DO","Lindsey Johnson, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"Rookwood Primary Care","street1":"4101 Edwards Rd.","street2":"Second Floor","city":"Cincinnati","state":"OH","zip":"45209","phone":"513-981-4646","fax":"513-979-2830","providers":["Nina Oberschmidt, DO","Andrew Merrill, DO","Krista Burridge, MD","Joel Daley, DO"]},
+            {"sourceName":"mercy health","officeName":"Sardinia Family Medicine","street1":"7109 Bachman Rd.","street2":"","city":"Sardinia","state":"OH","zip":"45171","phone":"937-446-2531","fax":"937-446-3441","providers":["Ashley Wellman, APRN-CNP","Benjamin Barnett, APRN-CNP","Kimberley Jodrey, APRN-CNP","Michael McHenry, MD","Kasie Rector, APRN-CNP","Kelci Tull, APRN-CNP","Todd Williams, MD"]},
+            {"sourceName":"mercy health","officeName":"Sayler Park School Health Center","street1":"","street2":"","city":"","state":"OH","zip":"","phone":"513-467-1400","fax":"","providers":[]},
+            {"sourceName":"mercy health","officeName":"Springdale Family Medicine","street1":"212 West Sharon Rd.","street2":"","city":"Cincinnati","state":"OH","zip":"45246","phone":"513-771-7213","fax":"","providers":["Grant Ridgway, MD","Joseph Kershner, DO","Erin Davlin, MD","Kara Smith, APRN-CNP","Benjamin Rose, DO","Douglas Hancher, MD","Emily Krans, APRN-CNP","Jonathan Gully, MD"]},
+            {"sourceName":"mercy health","officeName":"Tri-County Primary Care","street1":"9582 Princeton Glendale Rd","street2":"","city":"Hamilton","state":"OH","zip":"45011","phone":"513-346-5640","fax":"513-346-5644","providers":["Eleia Reyes, MD","Annie Johnson, MD","Jessica Stairhime, APRN-CNP","Steven Lunz, MD"]},
+            {"sourceName":"mercy health","officeName":"West Chester Family Medicine","street1":"8859 Brookside Ave.","street2":"Suite 101","city":"West Chester","state":"OH","zip":"45069","phone":"513-779-6225","fax":"","providers":["Christian Docena, MD","Mina Lutts, MD","Diane Koehl, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"West Chester Primary Care and Pediatrics","street1":"7777 University Dr","street2":"Suite D","city":"West Chester","state":"OH","zip":"45069","phone":"513-215-8190","fax":"513-215-8199","providers":["Clara Normanyo, MD","Pamela Davis, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"West Clermont Family Medicine","street1":"4101 Bach-Buxton Rd.","street2":"Suite 200","city":"Batavia","state":"OH","zip":"45103","phone":"513-215-0150","fax":"513-215-0159","providers":["Justin York, DO","Jacqueline Kerber, APRN-CNP"]},
+            {"sourceName":"mercy health","officeName":"West Internal Medicine and Pediatrics","street1":"3301 Mercy Health Blvd.","street2":"Suite 280","city":"Cincinnati","state":"OH","zip":"45211","phone":"513-215-9075","fax":"","providers":["Suzanne L Lekson, MD"]},
+            {"sourceName":"mercy health","officeName":"Westside Internal Medicine","street1":"5525 Marie Ave.","street2":"","city":"Cincinnati","state":"OH","zip":"45248","phone":"513-981-5463","fax":"513-598-2242","providers":["John Leisgang, MD","Brandon Parr, DO","Courtney Johnson, APRN-CNP","Matthew Witsken, MD","Mary Bogner, APRN-CNP","Caroline Klopp, PA-C","Allysia Billow, APRN-CNP","Luke Shivers, MD"]},
+            {"sourceName":"mercy health","officeName":"White Oak Primary Care","street1":"3310 Mercy Health Blvd","street2":" Suite 210","city":"Cincinnati","state":"OH","zip":"45211","phone":"513-981-4300","fax":"513-741-1416","providers":["Gregory Niehauser, DO","Geralynn Duell, DO"]},
+            {"sourceName":"mercy health","officeName":"Winton Road Primary Care","street1":"6540 Winton Rd.","street2":"","city":"Cincinnati","state":"OH","zip":"45224","phone":"513-981-4180","fax":"513-541-3819","providers":["Dante Raneses, MD","Courtney Fortner, DO","Juanita Gaines, MD","Ifeoma Okafor, DO","Nisar Haq, MD"]},
+            {"sourceName":"mercy health","officeName":"Sheffield Primary Care","street1":"5327 Detroit Rd","street2":"Suite B","city":"Sheffield","state":"OH","zip":"44054","phone":"440-365-2600","fax":"440-365-1366","providers":["Mary Esho, MD","Jose Mendoza, MD","Bushra Siddiqui, MD","Sleiman Abukhater, MD"]}
+        ];
+        // Initialize the application
+        function init() {
+            setupEventListeners();
         }
-        
-        // Create print button
-        function createPrintButton() {
-            const buttonContainer = document.createElement('div');
-            buttonContainer.className = 'action-buttons';
-            buttonContainer.style.cssText = 'margin: 20px auto; text-align: center; display: flex; justify-content: center;';
-            
-            const printButton = document.createElement('button');
-            printButton.textContent = 'Print Form';
-            printButton.style.cssText = 'padding: 12px 24px; background: #8B5CF6; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 500;';
-            printButton.onclick = printForm;
-            
-            buttonContainer.appendChild(printButton);
-            document.body.appendChild(buttonContainer);
-        }
-        
-        // Form validation and data collection
-        function collectFormData() {
-            const formData = new FormData(document.getElementById('referralForm'));
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                if (data[key]) {
-                    if (Array.isArray(data[key])) {
-                        data[key].push(value);
-                    } else {
-                        data[key] = [data[key], value];
-                    }
+
+        function setupEventListeners() {
+            const organizationSelect = document.getElementById('organizationSelect');
+            const officeSelect = document.getElementById('officeSelect');
+
+            organizationSelect.addEventListener('change', function() {
+                const selectedOrg = this.value;
+                populateOfficeDropdown(selectedOrg);
+                hideOfficeInfo();
+            });
+
+            officeSelect.addEventListener('change', function() {
+                const selectedOffice = this.value;
+                if (selectedOffice) {
+                    showOfficeInfo(selectedOffice);
                 } else {
-                    data[key] = value;
+                    hideOfficeInfo();
                 }
+            });
+        }
+
+        function init() {
+            setupEventListeners();
+        }
+
+        function setupEventListeners() {
+            const organizationSelect = document.getElementById('organizationSelect');
+            const officeSelect = document.getElementById('officeSelect');
+
+            organizationSelect.addEventListener('change', function() {
+                const selectedOrg = this.value;
+                populateOfficeDropdown(selectedOrg);
+                hideOfficeInfo();
+            });
+
+            officeSelect.addEventListener('change', function() {
+                const selectedOffice = this.value;
+                if (selectedOffice) {
+                    showOfficeInfo(selectedOffice);
+                } else {
+                    hideOfficeInfo();
+                }
+            });
+        }
+
+        function populateOfficeDropdown(organization) {
+            const officeSelect = document.getElementById('officeSelect');
+            
+            if (!organization) {
+                officeSelect.disabled = true;
+                officeSelect.innerHTML = '<option value="">-- First select an organization --</option>';
+                return;
             }
-            return data;
+
+            // Filter offices by organization
+            const offices = officesData.filter(office => 
+                office.sourceName && office.sourceName.toLowerCase() === organization.toLowerCase()
+            );
+
+            // Clear and populate office dropdown
+            officeSelect.innerHTML = '<option value="">-- Choose Office --</option>';
+            
+            offices.forEach((office, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = office.officeName;
+                option.dataset.organization = organization;
+                officeSelect.appendChild(option);
+            });
+
+            officeSelect.disabled = false;
         }
-        
-        // Save form data to localStorage for persistence
-        function saveFormData() {
-            const data = collectFormData();
-            localStorage.setItem('mindfullyFormData', JSON.stringify(data));
-        }
-        
-        // Load form data from localStorage
-        function loadFormData() {
-            const saved = localStorage.getItem('mindfullyFormData');
-            if (saved) {
-                const data = JSON.parse(saved);
-                Object.keys(data).forEach(key => {
-                    const element = document.querySelector(`[name="${key}"]`);
-                    if (element) {
-                        if (element.type === 'checkbox' || element.type === 'radio') {
-                            element.checked = true;
-                        } else {
-                            element.value = data[key];
-                        }
+
+        function showOfficeInfo(officeIndex) {
+            const organization = document.getElementById('officeSelect').selectedOptions[0].dataset.organization;
+            const offices = officesData.filter(office => 
+                office.sourceName && office.sourceName.toLowerCase() === organization.toLowerCase()
+            );
+            const office = offices[officeIndex];
+
+            if (!office) return;
+
+            // Populate office information
+            document.getElementById('officeName').textContent = office.officeName;
+            
+            // Build address
+            let address = office.street1;
+            if (office.street2 && office.street2.trim()) {
+                address += ', ' + office.street2;
+            }
+            document.getElementById('officeAddress').textContent = address;
+            
+            document.getElementById('officeCityState').textContent = `${office.city}, ${office.state} ${office.zip}`;
+            document.getElementById('officePhone').textContent = office.phone || 'Not available';
+            document.getElementById('officeFax').textContent = office.fax || 'Not available';
+            
+            // Format organization name
+            const orgNames = {
+                'trihealth': 'TriHealth',
+                'mercy health': 'Mercy Health',
+                'central ohio primary care': 'Central Ohio Primary Care (COPCP)'
+            };
+            document.getElementById('officeOrg').textContent = orgNames[organization.toLowerCase()] || organization;
+
+            // Populate providers - now using the providers array
+            const providersList = document.getElementById('providersList');
+            providersList.innerHTML = '';
+            
+            const providers = office.providers || [];
+
+            if (providers.length > 0) {
+                providers.forEach(provider => {
+                    if (provider && provider.trim()) {
+                        const tag = document.createElement('span');
+                        tag.className = 'provider-tag';
+                        tag.textContent = provider.trim();
+                        providersList.appendChild(tag);
                     }
                 });
+            } else {
+                providersList.innerHTML = '<span class="info-value">No providers listed</span>';
             }
+
+            document.getElementById('officeInfo').style.display = 'block';
         }
-        
-        // Auto-save on form changes
-        document.getElementById('referralForm').addEventListener('change', saveFormData);
-        document.getElementById('referralForm').addEventListener('input', saveFormData);
-        
-        // Initialize on page load
-        window.addEventListener('load', () => {
-            loadFormData();
-            createPrintButton();
-        });
-        
-        // Add hover effect for button
-        document.addEventListener('DOMContentLoaded', () => {
-            const style = document.createElement('style');
-            style.textContent = `
-                .action-buttons button:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                    transition: all 0.3s ease;
-                }
-            `;
-            document.head.appendChild(style);
-        });
+
+        function hideOfficeInfo() {
+            document.getElementById('officeInfo').style.display = 'none';
+        }
+
+        // Start the application
+        init();
     </script>
 </body>
 </html>
