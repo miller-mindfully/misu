@@ -743,7 +743,7 @@
             padding: 0;
             width: 90%;
             max-width: 1200px;
-            max-height: 90vh;
+            height: 90vh;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
@@ -758,13 +758,19 @@
             align-items: center;
             background: var(--bg-color);
             border-radius: 12px 12px 0 0;
+            flex-shrink: 0;
         }
 
         .modal-body {
             padding: 1.5rem;
             overflow-y: auto;
             flex: 1;
-            max-height: calc(90vh - 70px); /* Account for header height */
+            position: relative;
+        }
+
+        .modal-content-wrapper {
+            height: 100%;
+            overflow-y: auto;
         }
 
         .modal-close {
@@ -1787,6 +1793,8 @@
                     <div></div>
                 </div>
             </div>`;
+            // Restore body scrolling when modal is closed
+            document.body.style.overflow = '';
         }
 
         // Toast Notifications
@@ -2015,6 +2023,9 @@
             // Show loading spinner
             modalBody.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             modal.style.display = 'block';
+            
+            // Prevent body scrolling when modal is open
+            document.body.style.overflow = 'hidden';
             
             // Load content based on type
             const fileMap = {
